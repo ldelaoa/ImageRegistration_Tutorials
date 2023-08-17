@@ -36,3 +36,13 @@ Possible Transforms for 3D are:
     -- VersorRigid3DTransform.  
     -- ScaleVersor3DTransform.  
     -- TranslationTransform.  
+
+Other configurable Defaults:  
+offset="Diff" or "Fix" or "Mov". To calculate the offset at TranslationTransforms, "Diff" is difference between centroids of moving and target. "Fixed" is centroid of Fixed. "Mov" is centroid of Moving.  
+
+iterations_spec=300  . Maximum number of iteration for all Optimizers.  
+lr=1  Learning Rate for all Optimizers.  
+minStep=.00001  , Minimum Step for Optimizer: Regular Step Gradient Descent.  
+gradientT=1e-7  , GradientMagnitudeTolerance for Optimizer :  Regular Step Gradient Descent.  
+convWinSize=10  , Convergence Minimum Value for Optimizer: Gradient Descent.  
+convMinVal=1e-7 , Convergence Window Size for Optimizer: : Gradient Descent.  
