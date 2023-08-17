@@ -21,3 +21,18 @@ Square 7 - Translation 2D + Rotation.
 Square 8 - Isometric Scaling + Rotation.  
 Square 9 - Isometric Scaling + Translation 2D.  
 
+
+Possible Transforms for 2D are:  
+    -- Euler2DTransform.  
+    -- Similarity2DTransform.  
+    -- ScaleTransform.  
+    -- TranslationTransform.  
+
+Possible Transforms for 3D are:  
+    -- ScaleTransform.  
+    -- TranslationTransform.  
+    -- Euler3DTransform.  
+    -- Similarity3DTransform.  
+    -- VersorRigid3DTransform.  
+    -- ScaleVersor3DTransform.  
+    -- TranslationTransform.  
