@@ -5,6 +5,7 @@ import math
 from skimage.measure import regionprops,label
 from skimage import filters
 import matplotlib.pyplot as plt
+import registration_gui as rgui
 
 
 def getCenter(image):
@@ -37,7 +38,7 @@ def transformation_fun_select(arg,image):
         return sitk.ScaleVersor3DTransform()
 
 
-def tailor_registration(fixed_array,moving_array,transf_spec,center_spec,metric_spec,gradient_spec,shift_sepc,offset="Diff",iterations_spec=300,lr=1,minStep=.00001,gradientT=1e-7,convWinSize=10,convMinVal=1e-7):
+def tailor_registration(fixed_array,moving_array,transf_spec,center_spec,metric_spec,gradient_spec,shift_sepc,offset="Diff",iterations_spec=300,lr=1,minStep=.00001,gradientT=1e-7,convWinSize=10,convMinVal=1e-7,plot_bool=False):
     fixed_image = sitk.GetImageFromArray(fixed_array)
     moving_image = sitk.GetImageFromArray(moving_array)
     fixed_image = sitk.Cast(fixed_image, sitk.sitkFloat32)
@@ -105,10 +106,21 @@ def tailor_registration(fixed_array,moving_array,transf_spec,center_spec,metric_
     else:
         print("Error: No metric selected")
         exit(1)
+        
+        
+    if plot_bool:        
+        # Connect all of the observers so that we can perform plotting during registration.
+        registration_method.AddCommand(sitk.sitkStartEvent, rgui.start_plot)
+        registration_method.AddCommand(sitk.sitkEndEvent, rgui.end_plot)
+        registration_method.AddCommand(sitk.sitkMultiResolutionIterationEvent, rgui.update_multires_iterations) 
+        registration_method.AddCommand(sitk.sitkIterationEvent, lambda: rgui.plot_values(registration_method))
+
 
     #Registration
+    initial_metric_value = registration_method.MetricEvaluate(fixed_image, moving_image)
     final_transform = registration_method.Execute(fixed_image, moving_image)
     evaluationMetric = registration_method.GetMetricValue()
+    print(f"Initial metric value: {initial_metric_value}")
     print(f"Final metric value: {evaluationMetric}")
     print(f"Optimizer's stopping condition: {registration_method.GetOptimizerStopConditionDescription()}")
     moved_image = sitk.Resample(moving_image, fixed_image, final_transform, sitk.sitkLinear, 0.0, moving_image.GetPixelID())
